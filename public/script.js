@@ -269,7 +269,7 @@ function createDongleCard(id, dongle) {
         '<i class="fas fa-lock status-icon status-checked-out"></i>' : 
         '<i class="fas fa-unlock status-icon status-available"></i>';
     
-    const statusText = dongle.isCheckedOut ? 'Checked Out' : 'Available - Click to Check Out';
+    const statusText = dongle.isCheckedOut ? 'Checked Out' : 'Available';
     
     let detailsHtml = '';
     if (dongle.isCheckedOut) {
@@ -281,13 +281,13 @@ function createDongleCard(id, dongle) {
                 <p><strong>User:</strong> ${dongle.checkedOutBy}</p>
                 <p><strong>Location:</strong> ${dongle.location}</p>
                 <p><strong>Since:</strong> ${timeAgo}</p>
-                <p class="click-hint"><i class="fas fa-hand-pointer"></i> Click to Check In</p>
+                <p class="click-hint"><i class="fas fa-hand-pointer"></i> Check In</p>
             </div>
         `;
     } else {
         detailsHtml = `
             <div class="dongle-details available-hint">
-                <p class="click-hint"><i class="fas fa-hand-pointer"></i> Click to Check Out</p>
+                <p class="click-hint"><i class="fas fa-hand-pointer"></i> Check Out</p>
             </div>
         `;
     }
@@ -434,11 +434,9 @@ async function handleCheckout() {
             showNotification(`${result.dongle.name} checked out successfully!`, 'success');
             clearForm();
             loadDongles();
-        } else {
-            showNotification(result.error || 'Failed to check out dongle', 'error');
-        }
-        
-    } catch (error) {
+    } else {
+        showNotification(result.error || 'Failed to check out dongle', 'error');
+    }    } catch (error) {
         console.error('❌ Error checking out dongle:', error);
         showNotification('Network error. Please make sure the server is running.', 'error');
     } finally {
@@ -467,11 +465,9 @@ async function handleCheckin() {
             showNotification(`${result.dongle.name} checked in successfully!`, 'success');
             clearForm();
             loadDongles();
-        } else {
-            showNotification(result.error || 'Failed to check in dongle', 'error');
-        }
-        
-    } catch (error) {
+    } else {
+        showNotification(result.error || 'Failed to check in dongle', 'error');
+    }    } catch (error) {
         console.error('❌ Error checking in dongle:', error);
         showNotification('Network error. Please make sure the server is running.', 'error');
     } finally {
