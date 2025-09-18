@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DaVinci Dongle Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-key"></i> DaVinci Dongle Tracker</h1>
+            <p>License management for ARTHIN-KRK - Keep track of who has the license dongles</p>
+        </header>
+
+        <!-- Status Dashboard -->
+        <section class="dashboard">
+            <h2><i class="fas fa-dashboard"></i> Current Status</h2>
+            <div class="dongle-grid" id="dongleGrid">
+                <!-- Dongle cards will be populated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Check Out/In Form -->
+        <section class="form-section">
+            <h2><i class="fas fa-edit"></i> Check Out/In Dongle</h2>
+            
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="dongleSelect">Select Dongle:</label>
+                    <select id="dongleSelect" required>
+                        <option value="">Choose a dongle...</option>
+                        <option value="davinci-configurator-1">DaVinci Configurator #1</option>
+                        <option value="davinci-configurator-2">DaVinci Configurator #2</option>
+                        <option value="davinci-developer">DaVinci Developer</option>
+                    </select>
+                </div>
+
+                <!-- Check Out Form -->
+                <div id="checkoutForm" class="action-form">
+                    <h3><i class="fas fa-sign-out-alt"></i> Check Out</h3>
+                    <div class="form-group">
+                        <label for="userSelect">Select User:</label>
+                        <select id="userSelect" required>
+                            <option value="">Choose a user...</option>
+                            <option value="Tomasz Borkowicz" data-desk="D.7.29">Tomasz Borkowicz</option>
+                            <option value="Krzysztof Nowak Prochwicz" data-desk="D.7.30">Krzysztof Nowak Prochwicz</option>
+                            <option value="Michal Wieczorek" data-desk="D.7.31">Michal Wieczorek</option>
+                            <option value="Kasjan Salwin" data-desk="D.7.32">Kasjan Salwin</option>
+                            <option value="Kamil Switek" data-desk="D.7.33">Kamil Switek</option>
+                            <option value="Pawel Filo" data-desk="D.7.34">Pawel Filo</option>
+                            <option value="Kacper Mozdzierz" data-desk="D.7.35">Kacper Mozdzierz</option>
+                            <option value="Daniel Latka" data-desk="D.7.36">Daniel Latka</option>
+                            <option value="Daniel Mikolajczak" data-desk="D.7.37">Daniel Mikolajczak</option>
+                            <option value="Mustafa Seifeldin" data-desk="D.7.38">Mustafa Seifeldin</option>
+                            <option value="Marcin Borzecki" data-desk="D.7.39">Marcin Borzecki</option>
+                            <option value="Marcin Pajka" data-desk="D.7.40">Marcin Pajka</option>
+                            <option value="Wojciech Bilink" data-desk="D.7.41">Wojciech Bilink</option>
+                            <option value="Richa Sigh" data-desk="D.7.42">Richa Sigh</option>
+                            <option value="Karol Brodziak" data-desk="D.7.43">Karol Brodziak</option>
+                            <option value="Gabriel Chec" data-desk="D.7.44">Gabriel Chec</option>
+                            <option value="Joshy John" data-desk="D.7.45">Joshy John</option>
+                            <option value="Yahor Yauseyenka" data-desk="D.7.46">Yahor Yauseyenka</option>
+                            <option value="Mateusz Stemplewski" data-desk="D.7.47">Mateusz Stemplewski</option>
+                            <option value="Omar Elagawry" data-desk="D.7.48">Omar Elagawry</option>
+                            <option value="Pawel Luczak" data-desk="D.7.49">Pawel Luczak</option>
+                            <option value="Przemek Piprek" data-desk="D.7.50">Przemek Piprek</option>
+                            <option value="Jacek Wastag" data-desk="D.7.51">Jacek Wastag</option>
+                            <option value="Marcin Kowalik" data-desk="D.7.52">Marcin Kowalik</option>
+                            <option value="Ihor Marchak" data-desk="D.7.54">Ihor Marchak</option>
+                            <option value="Fatima Juveiria" data-desk="D.7.55">Fatima Juveiria</option>
+                            <option value="Joseph George" data-desk="D.7.56">Joseph George</option>
+                            <option value="Magdalena Ostrogorska" data-desk="D.7.57">Magdalena Ostrogorska</option>
+                            <option value="Anoop" data-desk="D.7.59">Anoop</option>
+                            <option value="Pawel Kapalka" data-desk="D.7.60">Pawel Kapalka</option>
+                            <option value="Marwan Salah" data-desk="D.7.61">Marwan Salah</option>
+                            <option value="Tomasz Szkaradek" data-desk="D.7.62">Tomasz Szkaradek</option>
+                            <option value="Rafal Pasierb" data-desk="D.7.63">Rafal Pasierb</option>
+                            <option value="Mariusz Scharon" data-desk="D.7.64">Mariusz Scharon</option>
+                            <option value="Mohamed Ibrahim" data-desk="D.7.65">Mohamed Ibrahim</option>
+                            <option value="Mateusz Konkel" data-desk="D.7.66">Mateusz Konkel</option>
+                            <option value="Alaa Sefelnasr" data-desk="D.7.67">Alaa Sefelnasr</option>
+                            <option value="Pawel Zajdel" data-desk="D.7.68">Pawel Zajdel</option>
+                            <option value="Husaifa" data-desk="D.7.69">Husaifa</option>
+                            <option value="Other">Other (specify below)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="customUserGroup" style="display: none;">
+                        <label for="userName">Custom User Name:</label>
+                        <input type="text" id="userName" placeholder="Enter custom name">
+                    </div>
+                    <div class="form-group">
+                        <label for="userLocation">Desk Location:</label>
+                        <input type="text" id="userLocation" placeholder="e.g., D.7.69 (auto-filled for selected users)" required>
+                    </div>
+                    <button id="checkoutBtn" class="btn btn-primary">
+                        <i class="fas fa-lock"></i> Check Out Dongle
+                    </button>
+                </div>
+
+                <!-- Check In Form -->
+                <div id="checkinForm" class="action-form" style="display: none;">
+                    <h3><i class="fas fa-sign-in-alt"></i> Check In</h3>
+                    <div class="current-user-info">
+                        <p><strong>Currently checked out by:</strong> <span id="currentUser"></span></p>
+                        <p><strong>Location:</strong> <span id="currentLocation"></span></p>
+                        <p><strong>Since:</strong> <span id="checkoutTime"></span></p>
+                    </div>
+                    <button id="checkinBtn" class="btn btn-success">
+                        <i class="fas fa-unlock"></i> Check In Dongle
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Activity -->
+        <section class="activity-section">
+            <h2><i class="fas fa-history"></i> Quick Actions</h2>
+            <div class="quick-actions">
+                <button id="refreshBtn" class="btn btn-secondary">
+                    <i class="fas fa-refresh"></i> Refresh Status
+                </button>
+                <button id="viewStatusBtn" class="btn btn-secondary">
+                    <i class="fas fa-info-circle"></i> View System Status
+                </button>
+                <button id="viewHistoryBtn" class="btn btn-secondary">
+                    <i class="fas fa-history"></i> View History
+                </button>
+            </div>
+        </section>
+
+        <!-- Status Modal -->
+        <div id="statusModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>System Status</h2>
+                <pre id="statusData"></pre>
+            </div>
+        </div>
+
+        <!-- History Modal -->
+        <div id="historyModal" class="modal">
+            <div class="modal-content history-modal">
+                <span class="close">&times;</span>
+                <h2><i class="fas fa-history"></i> Dongle Activity History</h2>
+                <div class="history-filters">
+                    <label for="historyFilter">Filter by dongle:</label>
+                    <select id="historyFilter">
+                        <option value="">All dongles</option>
+                        <option value="davinci-configurator-1">DaVinci Configurator #1</option>
+                        <option value="davinci-configurator-2">DaVinci Configurator #2</option>
+                        <option value="davinci-developer">DaVinci Developer</option>
+                    </select>
+                </div>
+                <div id="historyContent" class="history-content">
+                    <!-- History entries will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Area -->
+        <div id="notification" class="notification"></div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 DaVinci Dongle Tracker | ARTHIN-KRK license management for your team</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
