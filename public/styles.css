@@ -1086,6 +1086,30 @@ section:nth-child(4) { animation-delay: 0.4s; }
     min-width: 200px;
 }
 
+.btn-danger {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+}
+
+.btn-danger:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(231, 76, 60, 0.3);
+}
+
 .history-content {
     max-height: 400px;
     overflow-y: auto;
@@ -1216,6 +1240,14 @@ section:nth-child(4) { animation-delay: 0.4s; }
     .history-filters select {
         width: 100%;
         min-width: auto;
+        margin-bottom: 10px;
+    }
+    
+    .btn-danger {
+        width: 100%;
+        margin-left: 0 !important;
+        padding: 12px 15px;
+        font-size: 0.9rem;
     }
     
     .history-content {

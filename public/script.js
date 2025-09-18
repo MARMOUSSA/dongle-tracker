@@ -17,6 +17,7 @@ const statusData = document.getElementById('statusData');
 const historyModal = document.getElementById('historyModal');
 const historyContent = document.getElementById('historyContent');
 const historyFilter = document.getElementById('historyFilter');
+const clearHistoryBtn = document.getElementById('clearHistoryBtn');
 const notification = document.getElementById('notification');
 
 // State
@@ -153,6 +154,16 @@ function setupEventListeners() {
             loadHistory(e.target.value);
         });
         console.log('✅ History filter listener added');
+    }
+    
+    // Clear history button listener
+    if (clearHistoryBtn) {
+        clearHistoryBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('🗑️ Clear history button clicked');
+            clearHistory();
+        });
+        console.log('✅ Clear history button listener added');
     }
     
     // Form validation
@@ -708,6 +719,54 @@ function displayHistory(history) {
     }).join('');
     
     historyContent.innerHTML = historyHTML;
+}
+
+// Clear history function
+async function clearHistory() {
+    console.log('🗑️ Clearing history...');
+    
+    // Show confirmation dialog
+    const confirmed = confirm(
+        '⚠️ Are you sure you want to clear all history?\n\n' +
+        'This will permanently delete all dongle activity records.\n' +
+        'This action cannot be undone.'
+    );
+    
+    if (!confirmed) {
+        console.log('❌ History clear cancelled by user');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE}/history`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Failed to clear history: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        console.log('✅ History cleared successfully:', result);
+        
+        // Show success notification
+        showNotification('History cleared successfully! All activity records have been deleted.', 'success');
+        
+        // Reload history display
+        await loadHistory();
+        
+        // Reset filter
+        if (historyFilter) {
+            historyFilter.value = '';
+        }
+        
+    } catch (error) {
+        console.error('❌ Error clearing history:', error);
+        showNotification(`Error clearing history: ${error.message}`, 'error');
+    }
 }
 
 // Run health check on load

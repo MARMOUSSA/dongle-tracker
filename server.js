@@ -215,6 +215,25 @@ app.get('/api/history', (req, res) => {
     }
 });
 
+// Clear dongle history
+app.delete('/api/history', (req, res) => {
+    const data = readData();
+    
+    // Keep dongles data but clear history
+    data.history = [];
+    
+    if (writeData(data)) {
+        res.json({ 
+            message: 'History cleared successfully',
+            clearedAt: new Date().toISOString()
+        });
+    } else {
+        res.status(500).json({ 
+            error: 'Failed to clear history' 
+        });
+    }
+});
+
 // Get dongle history/status for debugging
 app.get('/api/status', (req, res) => {
     const data = readData();
