@@ -78,6 +78,11 @@ function addHistoryEntry(data, dongleId, action, userName, location = null) {
         data.history = [];
     }
     
+    // Use Poland timezone (Europe/Warsaw)
+    const polandTime = new Date().toLocaleString("en-US", {timeZone: "Europe/Warsaw"});
+    const polandDate = new Date().toLocaleDateString("en-US", {timeZone: "Europe/Warsaw"});
+    const polandTimeOnly = new Date().toLocaleTimeString("en-US", {timeZone: "Europe/Warsaw"});
+    
     const historyEntry = {
         id: Date.now().toString(),
         dongleId: dongleId,
@@ -86,8 +91,8 @@ function addHistoryEntry(data, dongleId, action, userName, location = null) {
         userName: userName,
         location: location,
         timestamp: new Date().toISOString(),
-        date: new Date().toLocaleDateString(),
-        time: new Date().toLocaleTimeString()
+        date: polandDate,
+        time: polandTimeOnly
     };
     
     data.history.unshift(historyEntry); // Add to beginning for newest first
@@ -138,7 +143,7 @@ app.post('/api/dongles/:dongleId/checkout', (req, res) => {
     dongle.isCheckedOut = true;
     dongle.checkedOutBy = userName;
     dongle.location = location;
-    dongle.checkedOutAt = new Date().toISOString();
+    dongle.checkedOutAt = new Date().toLocaleString("en-US", {timeZone: "Europe/Warsaw"});
 
     // Add history entry
     const historyEntry = addHistoryEntry(data, dongleId, 'checkout', userName, location);
@@ -225,7 +230,7 @@ app.delete('/api/history', (req, res) => {
     if (writeData(data)) {
         res.json({ 
             message: 'History cleared successfully',
-            clearedAt: new Date().toISOString()
+            clearedAt: new Date().toLocaleString("en-US", {timeZone: "Europe/Warsaw"})
         });
     } else {
         res.status(500).json({ 
@@ -238,7 +243,7 @@ app.delete('/api/history', (req, res) => {
 app.get('/api/status', (req, res) => {
     const data = readData();
     const status = {
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toLocaleString("en-US", {timeZone: "Europe/Warsaw"}),
         dongles: data.dongles,
         totalDongles: Object.keys(data.dongles).length,
         checkedOut: Object.values(data.dongles).filter(d => d.isCheckedOut).length
