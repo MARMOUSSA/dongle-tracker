@@ -2,15 +2,89 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+const session = require('express-session');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const DATA_FILE = path.join(__dirname, 'data', 'dongles.json');
 
+// Authentication settings
+const ACCESS_PASSWORD = '7250';
+
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+
+// Session configuration
+app.use(session({
+    secret: 'dongle-tracker-secret-key-7250',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: false, // Set to true if using HTTPS
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+}));
+
+// Authentication middleware
+function requireAuth(req, res, next) {
+    if (req.session && req.session.authenticated) {
+        return next();
+    } else {
+        return res.status(401).json({ error: 'Authentication required' });
+    }
+}
+
+// Serve static files with authentication check for main app
+app.use('/assets', express.static(path.join(__dirname, 'public', 'assets')));
+app.use('/styles.css', express.static(path.join(__dirname, 'public', 'styles.css')));
+app.use('/script.js', requireAuth, express.static(path.join(__dirname, 'public', 'script.js')));
+
+// Serve login page for unauthenticated users
+app.get('/', (req, res) => {
+    if (req.session && req.session.authenticated) {
+        // User is authenticated, serve main app
+        res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    } else {
+        // User not authenticated, serve login page
+        res.sendFile(path.join(__dirname, 'public', 'login.html'));
+    }
+});
+
+// Authentication endpoints
+app.post('/api/login', (req, res) => {
+    const { password } = req.body;
+    
+    if (password === ACCESS_PASSWORD) {
+        req.session.authenticated = true;
+        res.json({ 
+            success: true, 
+            message: 'Authentication successful' 
+        });
+    } else {
+        res.status(401).json({ 
+            error: 'Invalid access code' 
+        });
+    }
+});
+
+app.get('/api/check-auth', (req, res) => {
+    if (req.session && req.session.authenticated) {
+        res.json({ authenticated: true });
+    } else {
+        res.status(401).json({ authenticated: false });
+    }
+});
+
+app.post('/api/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            res.status(500).json({ error: 'Failed to logout' });
+        } else {
+            res.json({ message: 'Logged out successfully' });
+        }
+    });
+});
 
 // Initialize data file if it doesn't exist
 function initializeDataFile() {
@@ -105,16 +179,16 @@ function addHistoryEntry(data, dongleId, action, userName, location = null) {
     return historyEntry;
 }
 
-// Routes
+// Routes - All API routes require authentication
 
 // Get current dongle status
-app.get('/api/dongles', (req, res) => {
+app.get('/api/dongles', requireAuth, (req, res) => {
     const data = readData();
     res.json(data.dongles);
 });
 
 // Check out a dongle
-app.post('/api/dongles/:dongleId/checkout', (req, res) => {
+app.post('/api/dongles/:dongleId/checkout', requireAuth, (req, res) => {
     const { dongleId } = req.params;
     const { userName, location } = req.body;
 
@@ -162,7 +236,7 @@ app.post('/api/dongles/:dongleId/checkout', (req, res) => {
 });
 
 // Check in a dongle
-app.post('/api/dongles/:dongleId/checkin', (req, res) => {
+app.post('/api/dongles/:dongleId/checkin', requireAuth, (req, res) => {
     const { dongleId } = req.params;
     const data = readData();
     const dongle = data.dongles[dongleId];
@@ -206,7 +280,7 @@ app.post('/api/dongles/:dongleId/checkin', (req, res) => {
 });
 
 // Get dongle history
-app.get('/api/history', (req, res) => {
+app.get('/api/history', requireAuth, (req, res) => {
     const data = readData();
     const history = data.history || [];
     
@@ -221,7 +295,7 @@ app.get('/api/history', (req, res) => {
 });
 
 // Clear dongle history
-app.delete('/api/history', (req, res) => {
+app.delete('/api/history', requireAuth, (req, res) => {
     const data = readData();
     
     // Keep dongles data but clear history
@@ -240,7 +314,7 @@ app.delete('/api/history', (req, res) => {
 });
 
 // Get dongle history/status for debugging
-app.get('/api/status', (req, res) => {
+app.get('/api/status', requireAuth, (req, res) => {
     const data = readData();
     const status = {
         timestamp: new Date().toLocaleString("en-US", {timeZone: "Europe/Warsaw"}),

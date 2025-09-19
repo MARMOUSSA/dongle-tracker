@@ -12,6 +12,7 @@ const checkinBtn = document.getElementById('checkinBtn');
 const refreshBtn = document.getElementById('refreshBtn');
 const viewStatusBtn = document.getElementById('viewStatusBtn');
 const viewHistoryBtn = document.getElementById('viewHistoryBtn');
+const logoutBtn = document.getElementById('logoutBtn');
 const statusModal = document.getElementById('statusModal');
 const statusData = document.getElementById('statusData');
 const historyModal = document.getElementById('historyModal');
@@ -91,6 +92,15 @@ function setupEventListeners() {
             showHistory();
         });
         console.log('✅ View history button listener added');
+    }
+    
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('🚪 Logout button clicked');
+            handleLogout();
+        });
+        console.log('✅ Logout button listener added');
     }
     
     // User selection dropdown handler
@@ -762,6 +772,52 @@ async function clearHistory() {
     } catch (error) {
         console.error('❌ Error clearing history:', error);
         showNotification(`Error clearing history: ${error.message}`, 'error');
+    }
+}
+
+// Handle logout
+async function handleLogout() {
+    console.log('🚪 Starting logout process...');
+    
+    // Show confirmation dialog
+    const confirmed = confirm(
+        '🚪 Are you sure you want to logout?\n\n' +
+        'You will need to enter the access code again to return to the system.'
+    );
+    
+    if (!confirmed) {
+        console.log('❌ Logout cancelled by user');
+        return;
+    }
+    
+    try {
+        showLoading(true);
+        
+        const response = await fetch('/api/logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            console.log('✅ Logout successful');
+            showNotification('Logged out successfully. Redirecting to login...', 'success');
+            
+            // Redirect to login page after short delay
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1500);
+        } else {
+            console.error('❌ Logout failed');
+            showNotification('Logout failed. Please try again.', 'error');
+        }
+        
+    } catch (error) {
+        console.error('❌ Error during logout:', error);
+        showNotification('Network error during logout. Please try again.', 'error');
+    } finally {
+        showLoading(false);
     }
 }
 

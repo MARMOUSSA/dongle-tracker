@@ -21,7 +21,14 @@ The DaVinci Dongle Tracker is a sleek, modern web application designed to help t
 
 ## ✨ Features
 
-### 🔐 **Dongle Management**
+### 🔐 **Security & Access Control**
+- **Password Protection**: Secure access with 4-digit authentication code
+- **Session Management**: 24-hour secure sessions with automatic expiry
+- **Protected API**: All endpoints require authentication
+- **Secure Logout**: Safe session termination with confirmation
+- **Professional Login**: Beautiful, responsive login interface
+
+### 🎯 **Dongle Management**
 - **3 Dongle Types**: Track 2 DaVinci Configurator dongles + 1 Developer dongle
 - **Real-time Status**: Instant visibility of availability and current users
 - **One-click Actions**: Quick checkout/checkin with visual feedback
@@ -46,10 +53,12 @@ The DaVinci Dongle Tracker is a sleek, modern web application designed to help t
 - **Animated Elements**: Smooth transitions and hover effects
 - **Dark/Light Compatible**: Adapts to system preferences
 - **Touch-Friendly**: Optimized for mobile interaction
+- **Secure Login**: Professional authentication interface with modern design
 
 ### 🚀 **Technical Excellence**
 - **Real-time Updates**: Auto-refresh every 30 seconds
 - **Offline Resilience**: Graceful handling of network issues
+- **Session Security**: Express-session based authentication
 - **Fast Performance**: Lightweight and optimized for speed
 - **Error Handling**: Comprehensive error management and user feedback
 - **Production Ready**: Environment variable support and deployment configs
@@ -78,8 +87,9 @@ npm install
 # 3. Start the development server
 npm start
 
-# 4. Open in browser
+# 4. Open in browser and authenticate
 # Navigate to http://localhost:3000
+# Enter the 4-digit access code (contact admin for credentials)
 ```
 
 ### Environment Variables
@@ -88,6 +98,8 @@ npm start
 # Optional: Create .env file for custom configuration
 PORT=3000                    # Server port (default: 3000)
 NODE_ENV=production         # Environment mode
+ACCESS_CODE=XXXX            # 4-digit authentication code (optional override)
+SESSION_SECRET=your-secret  # Session encryption key (auto-generated if not set)
 ```
 
 ## 🚀 Deployment
@@ -131,14 +143,15 @@ npx vercel
 
 ```
 dongle-tracker/
-├── 📄 server.js              # Express.js backend server
+├── 📄 server.js              # Express.js backend server with authentication
 ├── 📦 package.json           # Dependencies and scripts
 ├── 🐳 render.yaml            # Render deployment config
 ├── 📖 README.md              # This documentation
 ├── 📝 DEPLOYMENT.md          # Detailed deployment guide
 ├── 🚫 .gitignore             # Git ignore rules
 ├── 📂 public/                # Frontend assets
-│   ├── 🌐 index.html        # Main HTML interface
+│   ├── 🌐 index.html        # Main HTML interface (protected)
+│   ├── 🔐 login.html         # Secure login page
 │   ├── 🎨 styles.css        # Modern CSS with animations
 │   └── ⚡ script.js         # Interactive JavaScript
 └── 💾 data/                 # Data storage
@@ -150,31 +163,48 @@ dongle-tracker/
 
 ### Endpoints
 
-| Method | Endpoint | Description | Response |
-|--------|----------|-------------|----------|
-| `GET` | `/api/dongles` | Get current dongle status | `{dongles}` |
-| `POST` | `/api/dongles/:id/checkout` | Check out a dongle | `{message, dongle}` |
-| `POST` | `/api/dongles/:id/checkin` | Check in a dongle | `{message, dongle}` |
-| `GET` | `/api/history` | Get activity history | `[{history}]` |
-| `GET` | `/api/history?dongleId=X` | Get filtered history | `[{history}]` |
-| `DELETE` | `/api/history` | Clear all history ⚠️ | `{message}` |
-| `GET` | `/api/status` | Get system status | `{status}` |
+| Method | Endpoint | Description | Auth Required | Response |
+|--------|----------|-------------|---------------|----------|
+| `POST` | `/api/login` | Authenticate with access code | ❌ | `{success, message}` |
+| `GET` | `/api/check-auth` | Check authentication status | ❌ | `{authenticated}` |
+| `POST` | `/api/logout` | End session securely | ✅ | `{message}` |
+| `GET` | `/api/dongles` | Get current dongle status | ✅ | `{dongles}` |
+| `POST` | `/api/dongles/:id/checkout` | Check out a dongle | ✅ | `{message, dongle}` |
+| `POST` | `/api/dongles/:id/checkin` | Check in a dongle | ✅ | `{message, dongle}` |
+| `GET` | `/api/history` | Get activity history | ✅ | `[{history}]` |
+| `GET` | `/api/history?dongleId=X` | Get filtered history | ✅ | `[{history}]` |
+| `DELETE` | `/api/history` | Clear all history ⚠️ | ✅ | `{message}` |
+| `GET` | `/api/status` | Get system status | ✅ | `{status}` |
 
 ### Example Requests
 
 ```javascript
-// Check out a dongle
+// Authenticate (login)
+POST /api/login
+{
+  "password": "XXXX"  // 4-digit access code
+}
+
+// Check out a dongle (requires authentication)
 POST /api/dongles/davinci-configurator-1/checkout
+Headers: { Cookie: "session=..." }  // Session from login
 {
   "userName": "Marwan Salah",
   "location": "D.7.61"
 }
 
-// Get history for specific dongle
+// Get history for specific dongle (requires authentication)
 GET /api/history?dongleId=davinci-configurator-1
+Headers: { Cookie: "session=..." }
 
-// Clear all history (requires confirmation in UI)
+// Logout securely
+POST /api/logout
+Headers: { Cookie: "session=..." }
+// Returns: {"message": "Logged out successfully"}
+
+// Clear all history (requires confirmation in UI + authentication)
 DELETE /api/history
+Headers: { Cookie: "session=..." }
 // Returns: {"message": "History cleared successfully", "clearedAt": "2025-09-18T..."}
 ```
 
@@ -193,12 +223,24 @@ The app includes 37 predefined users from the ARTHIN-KRK team:
 
 ## 🛡️ Security & Privacy
 
-- **No Sensitive Data**: Only stores dongle usage information
+- **Access Control**: Password-protected system with secure authentication
+- **Session Security**: 24-hour sessions with automatic expiry and secure cookies
+- **API Protection**: All endpoints require valid authentication
+- **No Sensitive Data**: Only stores dongle usage information (no personal data)
 - **Local Storage**: Data stored locally in JSON format
 - **HTTPS Ready**: SSL certificates provided by hosting platforms
 - **Input Validation**: All inputs validated and sanitized
 - **CORS Configured**: Secure cross-origin requests
+- **Secure Logout**: Safe session termination with confirmation
 - **No External Dependencies**: Minimal attack surface
+
+### 🔐 Authentication Details
+
+- **Login System**: Professional 4-digit access code interface
+- **Session Management**: Express-session with secure configuration
+- **Auto-Logout**: Sessions expire after 24 hours for security
+- **Route Protection**: All API endpoints and pages require authentication
+- **Secure Cookies**: HttpOnly and secure session cookies (in production)
 
 ## 🔧 Development
 
@@ -208,6 +250,19 @@ The app includes 37 predefined users from the ARTHIN-KRK team:
 npm start          # Start production server
 npm run dev        # Start development server with nodemon
 ```
+
+### Access Management
+
+**For Administrators:**
+- The default access code is set in the source code
+- Can be overridden with `ACCESS_CODE` environment variable
+- Sessions automatically expire after 24 hours
+- All API access requires authentication
+
+**For Users:**
+- Contact your system administrator for the access code
+- Login once every 24 hours
+- Use the logout button to end sessions securely
 
 ### Adding New Dongles
 
@@ -228,10 +283,13 @@ npm run dev        # Start development server with nodemon
 
 | Issue | Solution |
 |-------|----------|
+| **Access denied / Login required** | Contact admin for the 4-digit access code |
+| **Session expired** | Re-login with the access code (sessions last 24 hours) |
 | **Port already in use** | Change PORT in environment or kill existing process |
 | **Data not persisting** | Check file permissions in `data/` directory |
 | **UI not loading** | Verify all files in `public/` directory |
 | **History not showing** | Check browser console for JavaScript errors |
+| **Login page not loading** | Verify `login.html` exists in `public/` directory |
 
 ### Debug Mode
 
@@ -250,12 +308,14 @@ NODE_ENV=development npm start
 
 ## 📈 Roadmap
 
-- [ ] **User Authentication**: Login system for admin features
+- [x] **User Authentication**: ✅ Secure login system with session management
+- [ ] **Role-Based Access**: Admin and user roles with different permissions
 - [ ] **Email Notifications**: Automated reminders for overdue dongles
 - [ ] **Usage Analytics**: Charts and statistics dashboard
 - [ ] **Mobile App**: Native iOS/Android application
 - [ ] **Integration**: LDAP/Active Directory user sync
 - [ ] **Backup**: Automated data backup to cloud storage
+- [ ] **Audit Logs**: Enhanced security logging and monitoring
 
 ## 📄 License
 
