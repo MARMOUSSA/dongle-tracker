@@ -17,7 +17,7 @@
 
 ## 🌟 Overview
 
-The DaVinci Dongle Tracker is a sleek, modern web application designed to help teams manage and track the usage of DaVinci license dongles. Built with a beautiful glassmorphism UI and comprehensive functionality, it ensures accountability and prevents conflicts when multiple team members need access to limited license dongles.
+The DaVinci Dongle Tracker is a sleek, modern web application designed to help teams manage and track the usage of DaVinci license dongles. Built with a beautiful glassmorphism UI and comprehensive functionality, it ensures accountability and prevents conflicts when multiple team members need access to 6 different license dongles with unique serial numbers.
 
 ## ✨ Features
 
@@ -29,13 +29,14 @@ The DaVinci Dongle Tracker is a sleek, modern web application designed to help t
 - **Professional Login**: Beautiful, responsive login interface
 
 ### 🎯 **Dongle Management**
-- **3 Dongle Types**: Track 2 DaVinci Configurator dongles + 1 Developer dongle
+- **6 Dongle Types**: Track 3 DaVinci Developer dongles + 3 Configurator dongles
+- **Serial Number Tracking**: Unique identification with A-series and PGM-series numbers
 - **Real-time Status**: Instant visibility of availability and current users
 - **One-click Actions**: Quick checkout/checkin with visual feedback
 - **Smart Validation**: Prevents double-booking and invalid operations
 
 ### 👥 **User Management**
-- **37 Predefined Users**: Complete ARTHIN-KRK team directory (D.7.29 - D.7.69)
+- **38 Predefined Users**: Complete ARTHIN-KRK team directory + LAB (D.7.29 - D.7.69 + Room 7.4)
 - **Auto-fill Locations**: Desk locations automatically populated
 - **Custom Users**: Support for temporary users or visitors
 - **User Validation**: Ensures proper identification for accountability
@@ -186,7 +187,7 @@ POST /api/login
 }
 
 // Check out a dongle (requires authentication)
-POST /api/dongles/davinci-configurator-1/checkout
+POST /api/dongles/davinci-developer-a12809/checkout
 Headers: { Cookie: "session=..." }  // Session from login
 {
   "userName": "Marwan Salah",
@@ -194,7 +195,7 @@ Headers: { Cookie: "session=..." }  // Session from login
 }
 
 // Get history for specific dongle (requires authentication)
-GET /api/history?dongleId=davinci-configurator-1
+GET /api/history?dongleId=davinci-developer-a12809
 Headers: { Cookie: "session=..." }
 
 // Logout securely
@@ -210,7 +211,7 @@ Headers: { Cookie: "session=..." }
 
 ## 👥 Team Directory
 
-The app includes 37 predefined users from the ARTHIN-KRK team:
+The app includes 38 predefined users from the ARTHIN-KRK team:
 
 | Range | Users | Desks |
 |-------|-------|-------|
@@ -218,6 +219,7 @@ The app includes 37 predefined users from the ARTHIN-KRK team:
 | **D.7.40-D.7.49** | Marcin P., Wojciech B., Richa S., + 7 more | D.7.40-D.7.49 |
 | **D.7.50-D.7.59** | Przemek P., Jacek W., Marcin K., + 7 more | D.7.50-D.7.59 |
 | **D.7.60-D.7.69** | Pawel K., Marwan S., Tomasz S., + 7 more | D.7.60-D.7.69 |
+| **Special Locations** | LAB | Room 7.4 |
 
 *Full list available in the application dropdown*
 
@@ -266,9 +268,13 @@ npm run dev        # Start development server with nodemon
 
 ### Adding New Dongles
 
-1. **Update server.js**: Add new dongle to `initialData`
-2. **Update index.html**: Add option to dongle selects
-3. **Update history filter**: Add to history filter dropdown
+1. **Update server.js**: Add new dongle to `initialData` with unique ID and serial number
+2. **Update index.html**: Add option to both dongle select dropdowns (main form and history filter)
+3. **Test thoroughly**: Verify checkout/checkin and history tracking work correctly
+
+**Current Dongles:**
+- 3x DaVinci Developer: #A-12809, #A-12843, #A-12878  
+- 3x DaVinci Configurator: #A-12824, #A-2036, #PGM-6803
 
 ### Customization
 

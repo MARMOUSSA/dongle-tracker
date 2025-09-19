@@ -96,22 +96,43 @@ function initializeDataFile() {
     if (!fs.existsSync(DATA_FILE)) {
         const initialData = {
             dongles: {
-                "davinci-configurator-1": {
-                    name: "DaVinci Configurator #1",
+                "davinci-developer-a12809": {
+                    name: "DaVinci Developer #A-12809",
                     isCheckedOut: false,
                     checkedOutBy: null,
                     location: null,
                     checkedOutAt: null
                 },
-                "davinci-configurator-2": {
-                    name: "DaVinci Configurator #2",
+                "davinci-developer-a12843": {
+                    name: "DaVinci Developer #A-12843",
                     isCheckedOut: false,
                     checkedOutBy: null,
                     location: null,
                     checkedOutAt: null
                 },
-                "davinci-developer": {
-                    name: "DaVinci Developer",
+                "davinci-developer-a12878": {
+                    name: "DaVinci Developer #A-12878",
+                    isCheckedOut: false,
+                    checkedOutBy: null,
+                    location: null,
+                    checkedOutAt: null
+                },
+                "davinci-configurator-a12824": {
+                    name: "DaVinci Configurator #A-12824",
+                    isCheckedOut: false,
+                    checkedOutBy: null,
+                    location: null,
+                    checkedOutAt: null
+                },
+                "davinci-configurator-a2036": {
+                    name: "DaVinci Configurator #A-2036",
+                    isCheckedOut: false,
+                    checkedOutBy: null,
+                    location: null,
+                    checkedOutAt: null
+                },
+                "davinci-configurator-pgm6803": {
+                    name: "DaVinci Configurator #PGM-6803",
                     isCheckedOut: false,
                     checkedOutBy: null,
                     location: null,
